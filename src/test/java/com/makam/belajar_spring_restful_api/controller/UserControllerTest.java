@@ -90,7 +90,7 @@ class UserControllerTest {
         user.setUsername("test");
         user.setPassword(BCrypt.hashpw("test", BCrypt.gensalt()));
         user.setName("Test");
-        userRepository.save(user);
+        userRepository.save(user); //
 
 
         RegisterUserRequest request = new RegisterUserRequest();
