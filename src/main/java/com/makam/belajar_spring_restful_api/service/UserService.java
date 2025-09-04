@@ -23,15 +23,12 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private Validator validator;
+    private ValidationService validationService;
     //untuk validasi aturan bisnis (misalnya "username harus unik", "saldo minimal Rp 10.000").
 
     @Transactional
     public void register(RegisterUserRequest request){
-        Set<ConstraintViolation<RegisterUserRequest>>constraintViolations = validator.validate(request);
-        if(constraintViolations.size() != 0){
-            throw new ConstraintViolationException(constraintViolations);
-        }
+        validationService.validate(request);
 
         if (userRepository.existsById(request.getUsername())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
