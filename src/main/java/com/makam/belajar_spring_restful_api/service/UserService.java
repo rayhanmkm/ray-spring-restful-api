@@ -5,16 +5,11 @@ import com.makam.belajar_spring_restful_api.model.RegisterUserRequest;
 import com.makam.belajar_spring_restful_api.repository.UserRepository;
 import com.makam.belajar_spring_restful_api.security.BCrypt;
 import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import jakarta.validation.Validator;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Set;
 
 @Service
 public class UserService {
