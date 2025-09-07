@@ -1,7 +1,9 @@
 package com.makam.belajar_spring_restful_api.service;
 
 import com.makam.belajar_spring_restful_api.entity.User;
+import com.makam.belajar_spring_restful_api.model.LoginUserRequest;
 import com.makam.belajar_spring_restful_api.model.RegisterUserRequest;
+import com.makam.belajar_spring_restful_api.model.UserResponse;
 import com.makam.belajar_spring_restful_api.repository.UserRepository;
 import com.makam.belajar_spring_restful_api.security.BCrypt;
 import jakarta.transaction.Transactional;
@@ -35,5 +37,12 @@ public class UserService {
         user.setName(request.getName());
 
         userRepository.save(user);
+    }
+
+    public UserResponse get(User user){
+        return UserResponse.builder()
+                .username(user.getUsername())
+                .name(user.getName())
+                .build();
     }
 }
