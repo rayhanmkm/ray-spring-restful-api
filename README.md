@@ -15,7 +15,7 @@ The project demonstrates **authentication, relational database design, and layer
   - Contacts
 - Input validation & error handling
 - Standardized API responses
-- Clean layered architecture (Controller → Service → Repository)
+- Clean layered microservices architecture (Controller → Service → Repository)
 
 ---
 
