@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.UUID;
 
@@ -230,4 +231,63 @@ class ContactControllerTest {
             assertTrue(contactRepository.existsById(response.getData().getId()));
         });
     }
+
+    @Test
+    void deleteContactNotFound() throws Exception {
+        mockMvc.perform(
+                delete("/api/contacts/7215788216")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "test")
+        ).andExpectAll(
+                status().isNotFound()
+        ).andDo(result -> {
+            WebResponse<String> response = objectMapper.readValue(
+                    result.getResponse().getContentAsString(),
+                    new TypeReference<WebResponse<String>>() {}
+            );
+            assertNotNull(response.getErrors());
+        });
+    }
+
+    @Test
+    void deleteContactSuccess() throws Exception {
+        // 1. Buat contact dulu
+        CreateContactRequest request = new CreateContactRequest();
+        request.setFirstName("Rayhan");
+        request.setLastName("Atallah");
+        request.setEmail("rayhanmkm09@gmail.com");
+        request.setPhone("0817249748");
+
+        MvcResult resultCreate = mockMvc.perform(
+                post("/api/contacts")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "test")
+                        .content(objectMapper.writeValueAsString(request))
+        ).andExpect(status().isOk()).andReturn();
+
+        WebResponse<ContactResponse> contactResponse = objectMapper.readValue(
+                resultCreate.getResponse().getContentAsString(),
+                new TypeReference<>() {}
+        );
+
+        String contactId = contactResponse.getData().getId();
+
+        // 2. Baru lakukan DELETE
+        mockMvc.perform(
+                        delete("/api/contacts/{contactId}", contactId)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .header("X-API-TOKEN", "test")
+                ).andExpect(status().isOk())
+                .andDo(result -> {
+                    WebResponse<String> response = objectMapper.readValue(
+                            result.getResponse().getContentAsString(),
+                            new TypeReference<>() {}
+                    );
+                    assertNull(response.getErrors());
+                    assertEquals("OK", response.getData());
+                });
+    }
+
 }
